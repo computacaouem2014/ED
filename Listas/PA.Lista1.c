@@ -18,7 +18,7 @@ void ex1(){
 	for (int i=0; i<size1; i++)
       for (int j=i+1; j<size1;){
          if(v1[i]==v1[j]){               	 //Compara os elementos do mesmo vetor e transfere os repetidos
-            for (int k=j; k<size1; k++){    // para o final do vetor
+            for (int k=j; k<size1; k++){        // para o final do vetor
             	v1[k]=v1[k+1];
             }
             size1--;
@@ -198,7 +198,7 @@ int main(){
 				ex5();
 				break;
 			case 6:
-				//system("clear");
+				//system("clear")
 				ex6();
 				break;
 			default: break;
