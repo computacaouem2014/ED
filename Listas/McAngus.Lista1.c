@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 void printVec(float vec[], int size){
 	if(size == 1) printf("[%.f].\n", vec[size - 1]);
@@ -39,8 +40,8 @@ void ex1(){
 	for(int i = 0; i < 10; i++){
 		printf("[CONJ B] - Digite o %d numero: ", i + 1);
 		scanf("%d", &coB[i]);
-		int aux = coB[i], aux2 = 1;								//aux2 indica elemento repetido
-		for(int j = 0; j < i; j++) if(coB[j] == aux) aux2 = 0; //Verifico elementos repetidos
+		int aux = coB[i], aux2 = 1;							//aux2 indica elemento repetido
+		for(int j = 0; j < i; j++) if(coB[j] == aux) aux2 = 0;                      //Verifico elementos repetidos
 		if(aux2){
 			for(int j = 0; j < 20; j++){					   //Coloco elemento no coC
 				if(coB[i] == coA[j]) {						   //se não for repetido
@@ -112,28 +113,29 @@ void ex5(){
 }
 
 void ex6(){
-	int flyNum[12], flyCap[12], menu;
-	char flyOri[12][30], flyDes[12][30];
-	for(int i = 0; i < 12; i++){
-		printf("Digite o numero do %d voo: ", i + 1); scanf("%d", &flyNum[i]);
-		printf("Digite a capacidade do %d voo: ", i + 1); scanf("%d", &flyCap[i]);
-		printf("Digite a origem do %d voo: ", i + 1); gets(flyOri[i]);
-		printf("Digite o destino do %d voo: ", i + 1); gets(flyDes[i]);
+	int nVoo = 1;
+	int flyNum[nVoo], flyCap[nVoo], menu;
+	char flyOri[nVoo][30], flyDes[nVoo][30];
+	for(int i = 0; i < nVoo; i++){
+		printf("Digite o numero do %d voo: ", i + 1); scanf("%d", &flyNum[i]); getchar();
+		printf("Digite a capacidade do %d voo: ", i + 1); scanf("%d", &flyCap[i]); getchar();
+		printf("Digite a origem do %d voo: ", i + 1); fgets(flyOri[i], 30, stdin); strtok(flyOri[i], "\n");
+		printf("Digite o destino do %d voo: ", i + 1); fgets(flyDes[i], 30, stdin); strtok(flyDes[i], "\n");
 	}
 	do{
-		printf("\n\n\t\t1 - Consultar\n\t\t2 - Efetuar Reserva\n\t\t0 - Sair");
+		printf("\n\n\t\t1 - Consultar\n\t\t2 - Efetuar Reserva\n\t\t0 - Sair\n\t>>");
 		scanf("%d", &menu);
 		int subMenu;
 		switch(menu){
 			case 1:{
-				printf("\n\t\t\t1 - Por numero de voo\n\t\t\t2 - Por origem\n\t\t\t3 - Por destino\n\t\t\t0 - Voltar");
+				printf("\n\t\t\t1 - Por numero de voo\n\t\t\t2 - Por origem\n\t\t\t3 - Por destino\n\t\t\t0 - Voltar\n\t>>");
 				scanf("%d", &subMenu);
 				switch(subMenu){
 					case 1:{
 						int findNum;
 						printf("Digite o numero do voo que deseja procurar: ");
 						scanf("%d", &findNum);
-						for(int i = 0; i < 12; i++){
+						for(int i = 0; i < nVoo; i++){
 							if(findNum == flyNum[i]) printf("\nNumero: %d.\nLugares: %d.\nOrigem:%s.\nDestino: %s.", flyNum[i], flyCap[i], flyOri[i], flyDes[i]);
 							else printf("\nVoo nao encontrado.");
 						}
@@ -141,24 +143,39 @@ void ex6(){
 					case 2:{
 						char findOri[30];
 						printf("Digite a origem do voo que deseja procurar: ");
-						gets(findOri);
-						for(int i = 0; i < 12; i++){
+						fgets(findOri, 30, stdin); strtok(findOri, "\n");
+						for(int i = 0; i < nVoo; i++){
 							if(strcmp(findOri, flyOri[i]) == 1) printf("\nNumero: %d.\nLugares: %d.\nOrigem:%s.\nDestino: %s.", flyNum[i], flyCap[i], flyOri[i], flyDes[i]);
 							else printf("\nVoo nao encontrado.");
 						}
 					} break;
 					case 3:{
 						char findDes[30];
+						getchar();
 						printf("Digite o destino do voo que deseja procurar: ");
-						gets(findDest);
-						for(int i = 0; i < 12; i++){
+						fgets(findDes, 30, stdin); strtok(findDes, "\n");
+						for(int i = 0; i < nVoo; i++){
 							if(strcmp(findDes, flyDes[i]) == 1) printf("\nNumero: %d.\nLugares: %d.\nOrigem:%s.\nDestino: %s.", flyNum[i], flyCap[i], flyOri[i], flyDes[i]);
 							else printf("\nVoo nao encontrado.");
 						}
 					} break;
 					default: break;
-					
+				}
 			}
+			break;
+			case 2:{
+				printf("Digite o numero do voo qual deseja efetuar a reserva: ");
+				scanf("%d", &subMenu);
+				for(int i = 0; i < nVoo; i++){
+					if(subMenu == flyNum[i]){
+						if(flyCap[i] > 0){
+							printf("Reserva efetuada com sucesso.");
+							flyCap[i]--;
+						} else printf("Voo lotado.");
+					} else printf("Voo inexistente.");
+				}	
+			}
+			break;
 		}
 	} while(menu != 0);
 }
@@ -175,7 +192,7 @@ int main(){
 			case 3: ex3(); break;
 			case 4: ex4(); break;
 			case 5: ex5(); break;
-			//case 6: ex6(); break;
+			case 6: ex6(); break;
 			default: break;
 		}
 	} while(ex != 0);
