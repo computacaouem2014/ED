@@ -3,15 +3,12 @@
 #include <string.h>
 
 void printVec(float vec[], int size){
-	if(size == 1) printf("[%.f].\n", vec[size - 1]);
-		else{
-			if(size == 2) printf("[%.f, %.f\n].", vec[size - 1], vec[size]);
-				else{
-					printf("[%.f, ", vec[0]);
-					for(int i = 1; i < size - 2; i++) printf("%.f, ", vec[i]);
-					printf("%.f].\n", vec[size - 1]);
-				}
-		}
+	if(size == 1) printf("[%.2f].\n", vec[size - 1]);
+	else{
+		printf("[%.f, ", vec[0]);
+		for(int i = 1; i < size - 2; i++) printf("%.f, ", vec[i]);
+		printf("%.f].\n", vec[size - 1]);
+	}
 }
 
 void printVecInt(int vec[], int size){
