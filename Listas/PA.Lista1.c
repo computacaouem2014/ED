@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 float fat(int n){
-	if(n==0 || n==1) return n;
+	if(n==0 || n==1) return 1;
 	else return n*fat(n-1);
 }
 void ex1(){
