@@ -36,9 +36,9 @@ void ex1(){
 	for(int i = 0; i < 10; i++){
 		printf("[CONJ B] - Digite o %d numero: ", i + 1);
 		scanf("%d", &coB[i]);
-		int aux = coB[i], aux2 = 1;							//aux2 indica elemento repetido
-		for(int j = 0; j < i; j++) if(coB[j] == aux) aux2 = 0;                      //Verifico elementos repetidos
-		if(aux2){
+		int aux = 1;							//aux2 indica elemento repetido
+		for(int j = 0; j < i; j++) if(coB[j] == coB[i]) aux = 0;                      //Verifico elementos repetidos
+		if(aux){
 			for(int j = 0; j < 20; j++){					   //Coloco elemento no coC
 				if(coB[i] == coA[j]) {						   //se não for repetido
 					coC[count] = coB[i];
@@ -52,27 +52,28 @@ void ex1(){
 }
 
 void ex2(){
-	int vecA[10], vecB[10];
+	int size = 10, vecA[size], vecB[size];
 	for(int i = 0; i < 10; i++){
 		printf("Digite o %d numero: ", i + 1);
 		scanf("%d", &vecA[i]);						//Scan vecA
 		vecB[i] = fact(vecA[i]);					//Gera vecB
 	}
-	for(int i = 0; i < 10; i++) printf("%d; ", vecB[i]); //Printa vecB
+	printVecInt(vecB, size); //Printa vecB
 }
 
 void ex3(){
-	float vecA[10], vecB[10], vecC[10];
-	for(int i = 0; i < 10; i++){
+	int size = 10;
+	float vecA[size], vecB[size], vecC[size];
+	for(int i = 0; i < size; i++){
 		printf("[VET A] - Digite o %d numero: ", i + 1);	//Gera vecA
 		scanf("%f", &vecA[i]);
 	}
-	for(int i = 0; i < 10; i++){
+	for(int i = 0; i < size; i++){
 		printf("[VET B] - Digite o %d numero: ", i + 1);	//Gera vecB e vecC,
 		scanf("%f", &vecB[i]);
 		vecC[i] = vecA[i] - vecB[i];
 	}
-	printVec(vecC, 10);
+	printVec(vecC, size);
 }
 
 void ex4(){
@@ -88,7 +89,7 @@ void ex4(){
 		if(temp[i] < min) min = temp[i];
 	}
 	printVec(temp, 12);
-	printf("\nMaxima de %.f, minima de %.f.\n", max, min);
+	printf("\nMaxima de %.2f, minima de %.2 f.\n", max, min);
 }
 
 void ex5(){
@@ -119,12 +120,12 @@ void ex6(){
 		printf("Digite o destino do %d voo: ", i + 1); fgets(flyDes[i], 30, stdin); strtok(flyDes[i], "\n");
 	}
 	do{
-		printf("\n\n\t\t1 - Consultar\n\t\t2 - Efetuar Reserva\n\t\t0 - Sair\n\t>>");
+		printf("\n\n\t\t1 - Consultar\n\t\t2 - Efetuar Reserva\n\t\t0 - Sair\n\t-->");
 		scanf("%d", &menu);
 		int subMenu;
 		switch(menu){
 			case 1:{
-				printf("\n\t\t\t1 - Por numero de voo\n\t\t\t2 - Por origem\n\t\t\t3 - Por destino\n\t\t\t0 - Voltar\n\t>>");
+				printf("\n\t\t\t1 - Por numero de voo\n\t\t\t2 - Por origem\n\t\t\t3 - Por destino\n\t\t\t0 - Voltar\n\t-->");
 				scanf("%d", &subMenu);
 				switch(subMenu){
 					case 1:{
@@ -157,8 +158,7 @@ void ex6(){
 					} break;
 					default: break;
 				}
-			}
-			break;
+			} break;
 			case 2:{
 				printf("Digite o numero do voo qual deseja efetuar a reserva: ");
 				scanf("%d", &subMenu);
@@ -168,17 +168,16 @@ void ex6(){
 							printf("Reserva efetuada com sucesso.");
 							flyCap[i]--;
 						} else printf("Voo lotado.");
-					} else printf("Voo inexistente.");
+					}
 				}	
-			}
-			break;
+			} break;
 		}
 	} while(menu != 0);
 }
 	
 
 int main(){
-	int ex = 1;
+	int ex;
 	do {
 		printf("Escolha um exercicio (de 1 a 6, 0 para sair): \n-->");
 		scanf("%d", &ex);
