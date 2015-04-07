@@ -19,7 +19,7 @@ typedef struct {
 
 void listStart(list *lista){
 	lista -> size = 0;
-	printf("\\\\List inicializated//\n");
+	printf("\\\\List initialized//\n");
 }
 
 int listSize(list lista){
@@ -27,7 +27,7 @@ int listSize(list lista){
 }
 
 void listInsert(list *lista, keyType b, int j){
-	if (lista->size >= MAX) {
+	if (lista -> size >= MAX) {
 		printf("Vetor cheio\n");
 	} else if (j > 0 && lista -> size > j){}
 		else if (j != lista -> size) {
