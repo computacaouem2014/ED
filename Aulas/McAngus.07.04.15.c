@@ -4,8 +4,6 @@
 #include <time.h>
 
 #define MAX 50
-#define TRUE 1
-#define FALSE 0
 
 typedef int keyType;
 
