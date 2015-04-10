@@ -55,8 +55,14 @@ int listSearch(keyType b, list lista) {
 }
 
 int binSearchRecursive(keyType b, list lista, int mid) {
-	return mid > 2 ? binSearchR(b, lista, mid/2) : mid;
+	if (mid > 2) {
+		if (b == lista.a[mid].key) return mid;
+		else if (b > lista.a[mid].key) return binSearchRecursive(b, lista, (mid + lista.size) / 2);
+		else return binSearchRecursive(b, lista, mid / 2);
+	}
+	return 0;
 }
+	
 
 int binSearch(keyType b, list lista) {
 	int inf = 0, sup = lista.size - 1, mid = (inf + sup) / 2;
@@ -158,7 +164,7 @@ int main(){
 	listInsertOrd(&staticList2, random);
 	printf("Digite o elemento que deseja procurar: ");
 	scanf("%d", &scan);
-	printf("O elemento %sencontrado.\n ", binSearchRecursive(scan, staticList2, staticList2.size) == 0 ? "nao foi " : "foi ");
+	printf("O elemento %sencontrado.%d\n ", binSearchRecursive(scan, staticList2, staticList2.size/2) == 0 ? "nao foi " : "foi ", binSearchRecursive(scan, staticList2, staticList2.size/2));
 	printf("Digite o elemento que deseja deletar: ");
 	scanf("%d", &del);
 	listDel(del, &staticList2);
