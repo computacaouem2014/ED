@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX 50
+#define MAX 10
 
 typedef int keyType;
 
@@ -15,28 +15,42 @@ typedef struct {
 	int size;
 } list;
 
-void listInsertOrd(list *lista, keyType b) {
-	if (lista -> size >= MAX){
-		printf("Lista Cheia.\n");
+void listEnd(list *lista, keyType b) {
+	if (lista -> size >= MAX) {
+		printf("Vetor cheio. %d\n", lista -> size);
 	} else {
-		int i;
-		for (i = 0; i < lista -> size; i++) {
-			if (b < lista -> a[i].key) break;
+		lista -> a[lista -> size].key = b;
+		lista -> size++;
+	}
+}
+
+void insertion(list *lista) {
+	for(int i = 1; i < lista -> size; i++){
+		int j = i - 1, change = lista -> a[i].key;
+		while(change < lista -> a[j].key && j >= 0){
+			lista -> a[j + 1].key = lista -> a[j].key;
+			j--;
 		}
-		if (i < lista -> size){
-			lista -> size++;
-			for (int j = lista -> size - 1; j > i; j--){
-				int aux = lista -> a[j].key;
-				lista -> a[j].key = lista -> a[j - 1].key;
-			}
-			lista -> a[i].key = b;
-		}
+		lista -> a[j + 1].key = change;
+	}
+}
+
+void randList(list *arr, int num, int max, int min) {
+	max -= min;
+	for (int k = num - 1; k >= 0; k--) {
+		listEnd(arr, rand() % max + min);
 	}
 }
 
 void listStart(list *lista) {
 	lista -> size = 0;
-	printf("\t\t\t\t\t\t\t\t\t\\\\List initialized//\n\t\t\t\t\t\t\t\t\t \\\\\\\\\\\\\\\\\\/////////\n");
+	printf("\\\\List initialized//\n");
+}
+
+void showList(list lista) {
+	for (int i = 0; i < lista.size; i++) {
+		printf("| %2d ", lista.a[i].key);
+	} printf("|\n");
 }
 
 void printArray(int a[], int size) {
@@ -51,29 +65,40 @@ void printArray(int a[], int size) {
 	} else printf("\n[]\n");
 }
 
-void randNum(int arr[], int size, int max, int min){
-	srand(time(NULL));
+void randNum(int *arr, int size, int max, int min){
 	max -= min;
-	for (int k = size - 1; k>=0; k--)
+	for (int k = size - 1; k>=0; k--) {
 		arr[k] = rand() % max + min;
-}
-
-void insertion(int *arr, int size){
-	for(int i = 1; i < size; i++){
-		int j = i - 1, change = arr[i];
-		while(change < arr[j] && j >= 0){
-			arr[j + 1] = arr[j];
-			j--;
-		}
-		arr[j + 1] = change;
 	}
 }
 
+void insertionFirst(list *lista, list *lista2) {
+	if (lista -> a[0].key > lista2 -> a[0].key) {
+		for (int i = 0; i < lista -> size; i++) {
+			int aux = lista -> a[i].key;
+			lista -> a[i].key = lista2 -> a[i].key;
+			lista2 -> a[i].key = aux;
+		}
+	}
+}
+
+int binSearch(keyType b, list lista) {
+	int first = 0, last = lista.size - 1, mid = (first+last)/2;
+	while (first <= last) {
+		if (lista.a[mid].key < b)
+			first = mid + 1;    
+		else if (lista.a[mid].key == b) {
+			return mid;
+		} else last = mid - 1;
+	mid = (first + last)/2;
+	}
+	return -1;
+}
 //ex1
 void insertionSort(int start, int *arr, int size){
 	if (start < size){
 		int j = start - 1, change = arr[start];
-		while (change < arr[j] && j > 0) {
+		while (change < arr[j] && j >= 0) {
 			arr[j + 1] = arr[j];
 			j--;
 		}
@@ -130,17 +155,45 @@ void splitVec(int in[], int sizeIn, int *outPos, int *outNeg, int *sizePos, int 
 }
 
 //ex5
-//coming soon.
+int bingo() {
+	srand(time(NULL));
+	int n, resul[5];
+	printf("Digite o numero de cartelas que sera gerado: ");
+	scanf("%d", &n);
+	list cartelas[n];
+	for (int i = 0; i < n; i++) {
+		listStart(&cartelas[i]);
+		randList(&cartelas[i], 10, 60, 0);
+		insertion(&cartelas[i]);
+	}
+	for (int i = 0; i < n; i++ ) {
+		for (int j = i + 1; j < n; j++){
+			insertionFirst(&cartelas[i], &cartelas[j]);
+		}
+		printf("%2d ", i + 1);
+		showList(cartelas[i]);
+	}
+	randNum(resul, 5, 60, 0);
+	insertionSort(1, resul, 5);
+	printArray(resul, 5);
+	for (int i = 0; i < n; i++) {
+		int count = 0;
+		while (binSearch(resul[count], cartelas[i]) != -1 && count < 5) count++;
+		printf("A cartela %2d%s possui todos os numeros.\n", i + 1, count == 5 ? "" : " nao");
+	}
+	return 0;
+}
 
-int main(){
+int main() {
 	int arr[10], arr2[10], arr3[10], a = 0, b = 0;
 	randNum(arr, 10, 100, -30);
 	printArray(arr, 10);
 	selectionSort(arr, 10);
-//	repSort(arr, 10);
+	repSort(arr, 10);
 	splitVec(arr, 10, arr2, arr3, &a, &b);
 	printArray(arr, 10);
 	printArray(arr2, a);
 	printArray(arr3, b);
+	bingo();
 	return 0;
 }

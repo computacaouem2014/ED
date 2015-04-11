@@ -66,7 +66,7 @@ int binSearchRecursive(keyType b, list lista, int mid) {
 
 int binSearch(keyType b, list lista) {
 	int inf = 0, sup = lista.size - 1, mid = (inf + sup) / 2;
-	while (mid > 2) {
+	while (inf <= sup) {
 		if (b == lista.a[mid].key) {
 			return mid;
 		} else if (b > lista.a[mid].key) {
