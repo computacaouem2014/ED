@@ -23,6 +23,18 @@ void listEnd(list *lista, keyType b) {
 		lista -> size++;
 	}
 }
+int binSearch(keyType b, list lista) {
+	int first = 0, last = lista.size - 1, mid = (first+last)/2;
+	while (first <= last) {
+		if (lista.a[mid].key < b)
+			first = mid + 1;    
+		else if (lista.a[mid].key == b) {
+			return mid;
+		} else last = mid - 1;
+	mid = (first + last)/2;
+	}
+	return -1;
+}
 
 void insertion(list *lista) {
 	for(int i = 1; i < lista -> size; i++){
@@ -38,7 +50,8 @@ void insertion(list *lista) {
 void randList(list *arr, int num, int max, int min) {
 	max -= min;
 	for (int k = num - 1; k >= 0; k--) {
-		listEnd(arr, rand() % max + min);
+		int add = rand() % max + min;
+		listEnd(arr, add);
 	}
 }
 
@@ -82,18 +95,18 @@ void insertionFirst(list *lista, list *lista2) {
 	}
 }
 
-int binSearch(keyType b, list lista) {
-	int first = 0, last = lista.size - 1, mid = (first+last)/2;
-	while (first <= last) {
-		if (lista.a[mid].key < b)
-			first = mid + 1;    
-		else if (lista.a[mid].key == b) {
-			return mid;
-		} else last = mid - 1;
-	mid = (first + last)/2;
+void repRemove(list *lista) {	
+	insertion(lista);
+	for (int j = 0; j < lista -> size - 1; j++) {
+		for (int k = j + 1; k < lista -> size; k++) {
+			if (lista -> a[j].key == lista -> a[k].key) {
+				lista -> a[j].key++;
+			}
+		insertion(lista);
+		}
 	}
-	return -1;
 }
+
 //ex1
 void insertionSort(int start, int *arr, int size){
 	if (start < size){
@@ -164,7 +177,7 @@ int bingo() {
 	for (int i = 0; i < n; i++) {
 		listStart(&cartelas[i]);
 		randList(&cartelas[i], 10, 60, 0);
-		insertion(&cartelas[i]);
+		repRemove(&cartelas[i]);
 	}
 	for (int i = 0; i < n; i++ ) {
 		for (int j = i + 1; j < n; j++){
@@ -175,6 +188,12 @@ int bingo() {
 	}
 	randNum(resul, 5, 60, 0);
 	insertionSort(1, resul, 5);
+	for (int i = 0; i < 5; i++) {
+		for (int j = i + 1; j < 5; j++) {
+			if (resul[i] == resul[j]) resul[j]++;
+		}
+		insertionSort(1, resul, 5);
+	}
 	printArray(resul, 5);
 	for (int i = 0; i < n; i++) {
 		int count = 0;
@@ -185,15 +204,7 @@ int bingo() {
 }
 
 int main() {
-	int arr[10], arr2[10], arr3[10], a = 0, b = 0;
-	randNum(arr, 10, 100, -30);
-	printArray(arr, 10);
-	selectionSort(arr, 10);
-	repSort(arr, 10);
-	splitVec(arr, 10, arr2, arr3, &a, &b);
-	printArray(arr, 10);
-	printArray(arr2, a);
-	printArray(arr3, b);
 	bingo();
 	return 0;
 }
+
