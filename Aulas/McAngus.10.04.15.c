@@ -51,7 +51,7 @@ void listStart(list *lista) {
 int listSearch(keyType b, list lista) {
 	for (int i = 0; i < lista.size; i++) {
 		if (b == lista.a[i].key) return i;
-	} return 0;
+	} return -1;
 }
 
 int binSearchRecursive(keyType b, list lista, int mid) {
