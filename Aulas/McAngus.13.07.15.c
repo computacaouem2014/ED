@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-//Listas Ligadas Dinamicas
+//Listas Ligadas Dinamicas e "sentinela"
 
 typedef int keyType;
 
@@ -14,64 +14,87 @@ typedef struct structure {
 } node;
 
 typedef struct {
-	node *beggin;
+	node *beggin, *aux;
 } list;
 
 void initiate(list *li) {
-	li -> beggin = NULL;
+	li -> aux = (node*) malloc(sizeof(node));
+	li -> beggin = li -> aux;
 }
 
-bool buscaSeqOrd(keyType key, list li, node* *ant) {
+node *buscaSeqOrd(keyType key, list li, node *ant) {
 	node *p = li.beggin;
-	while(p) {
-		if(p -> key > key) return false;
-		else if(p -> key == key) return true;
+	while(p != li.aux) {
+		if(p -> key > key) return NULL;	
+		else if(p -> key == key) return p;
 		else {
-			*ant = p;
+			ant = p;
 			p = p -> next;
 		}
 	}
-	return false;
+	return NULL;
 }
 
 void putIn(keyType key, int data, list *li) {
-	if(!buscaSeqOrd(key, *li, NULL)) {
-		node *new = (node*) malloc(sizeof(node)), *n, *last;
+	node *new = (node*) malloc(sizeof(node)), *ant = NULL;
+	if(!buscaSeqOrd(key, *li, ant)) {
 		new -> key = key;
 		new -> data = data;
-		if(!li -> beggin) {
-			new -> next = NULL;
+		if(li -> beggin == li -> aux) {
+			new -> next = li -> aux;
 			li -> beggin = new;
 		} else if(key < li -> beggin -> key) {
-			new -> next = li -> beggin;
+			new -> next = li -> beggin -> next;
 			li -> beggin = new;
 		} else {
-			n = li -> beggin;
-			while(n -> next) {
-				if(n -> key > key) break;
-				last = n;
-				n = n -> next;
-			}
-			new -> next = last -> next;
-			last = new;
+			new -> next = ant;
+			ant = new;
 		}
 	}
+}
+
+node *findElem(int n, list li) {
+	node *p = li.beggin;
+	int i = 1;
+	if(p != li.aux) {
+		while(p != li.aux) {
+			p = p -> next;
+			i++;
+			if(i < n) return p;
+		}
+	}
+	return NULL;
+}
+
+void putOut(keyType key, list *li) {
+}
+
+void destroyList(list *li) {
+	node *atual, *prox;
+	atual = li -> beggin;
+	while (atual) {
+		prox = atual -> next;
+		atual -> next = NULL;
+		free(atual);
+		atual = prox;
+	}
+	li -> beggin = NULL;
 }
 
 
 void showList(list li) {
 	node *p = li.beggin;
 	printf("Beggin -> [");
-	while(p) {
+	while(p != li.aux) {
 		printf("%d, %d", p -> key, p -> data);
 		p = p -> next;
-		if(p) printf("], [");
+		if(p != li.aux) printf("], [");
 	}
 	printf("].\n");
 }
 
 void showFirst(list li) {
-	if(!li.beggin) {
+	if(li.beggin == li.aux) {
 		printf("Empty list.\n");
 	} else {
 		printf("First -> [%d, %d].\n", li.beggin -> key, li.beggin -> data);
@@ -79,10 +102,10 @@ void showFirst(list li) {
 }
 
 void showLast(list li) {
-	if(!li.beggin) printf("Empty list.\n");
+	if(li.beggin == li.aux) printf("Empty list.\n");
 	else {
 		node *p = li.beggin;
-		while(p -> next) {
+		while(p -> next != li.aux) {
 			p = p -> next;
 		}
 		printf("Last -> [%d, %d].\n", p -> key, p -> data);
@@ -90,28 +113,17 @@ void showLast(list li) {
 }
 
 int showSize(list li) {
-	if(!li.beggin) {
+	if(li.beggin != li.aux) {
 		printf("Empty list.\n");
 		return 0;
 	} else {
 		int size = 1;
 		node *p = li.beggin;
-		while(p -> next) {
+		while(p -> next != li.aux) {
 			p = p -> next;
 			size++;
 		}
 		return size;
-	}
-}
-
-void putOut(list *list) {
-	node *elem;
-	elem = list -> beggin;
-	if(!elem) {
-		printf("Empty list.\n");
-	} else {
-		list -> beggin = elem -> next;
-		free(elem);
 	}
 }
 
@@ -136,6 +148,8 @@ int main() {
 		printf("Digite um numero: "); scanf("%d", &number);
 		if(key) putIn(key, number, &li);
 	}
+	showList(li);
+	destroyList(&li);
 	showList(li);
 	return 0;
 }
