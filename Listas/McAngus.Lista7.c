@@ -54,6 +54,7 @@ void putIn(keyType key, char *data, line *li) {
 		new -> next = NULL;
 	} else {
 		li -> end -> next = new;
+		new -> next = NULL;
 	}
 	li -> end = new;
 }
@@ -71,7 +72,8 @@ void entrarNaFila(pessoa p, banco *agencia) {
 		} else {
 			agencia -> preferencial -> end -> next = new;
 		}
-		if(agencia -> preferencial -> end) printf("%s entrou na fila.\n", agencia -> preferencial -> end -> nome);
+		agencia -> preferencial -> end = new;
+		if(agencia -> preferencial -> end != agencia -> preferencial -> beggin) printf("%s entrou na fila preferencial.\n", agencia -> preferencial -> end -> nome);
 	} else {
 		if(!agencia -> normal -> beggin) {
 			agencia -> normal -> beggin = new;
@@ -84,113 +86,113 @@ void entrarNaFila(pessoa p, banco *agencia) {
 	}
 }
 
-void showLine(line li) {
-	node *p = li.beggin;
-	printf("Beggin -> [");
-	while(p) {
-		printf("%d, %s", p -> key, p -> data);
-		p = p -> next;
-		if(p) printf("], [");
-	}
-	printf("].\n");
-}
-
-void showFila(fila fi) {
-	if(!fi.beggin) {
-		pessoa *p = fi.beggin;
-		printf("Beggin -> [");
-		while(p) {
-			printf("%d, %s, %d", p -> key, p -> nome, p -> idade);
-			p = p -> next;
-			if(p) printf("], [");
-		}
-		printf("].\n");
-	} else {
-		printf("Ninguem esta na fila.\n");
-	}
-}
-
-int showSize(line li) {
-	if(!li.beggin) {
-		printf("Empty line.\n");
-		return 0;
-	} else {
-		int size = 1;
-		node *p = li.beggin;
-		while(p -> next) {
-			p = p -> next;
-			size++;
-		}
-		return size;
-	}
-}
-
-void putOut(line *line) {
-	node *elem;
-	elem = line -> beggin;
-	if(!elem) {
-		printf("Empty line.\n");
-	} else {
-		line -> beggin = elem -> next;
+void atenderProximo(banco *agencia) {
+	if(agencia -> preferencial -> beggin) {
+		pessoa *elem;
+		elem = agencia -> preferencial -> beggin;
+		printf("Atendendo %s.\n", agencia -> preferencial -> beggin -> nome);
+		agencia -> preferencial -> beggin = elem -> next;
+		free(elem);
+	} else if(agencia -> normal -> beggin) {
+		pessoa *elem;
+		elem = agencia -> normal -> beggin;
+		printf("Atendendo %s\n", agencia -> normal -> beggin -> nome);
+		agencia -> normal -> beggin = elem -> next;
 		free(elem);
 	}
 }
 
-void clearLine(line *line) {
-	node *atual, *next;
-	atual = line -> beggin;
-	while(atual) {
-		next = atual -> next;
-		free(atual);
-		atual = next;
-	}
-	line -> beggin = NULL;
-	line -> end = NULL;
-}
-
-int crescLine(line li) {
-	node *atual, *next;
-	atual = li.beggin;
-	next = li.beggin -> next;
-	while(atual -> next != NULL && next -> next != NULL) {
-		if(atual -> key > next -> key) return 0;
-		atual = next -> next;
-		next = atual -> next;
-	}
-	return 1;
-}
-
-void removeMaior(line *li) {
-	node *big, *next;
-	big = li -> beggin;
-	next = li -> beggin -> next;
-	int i = showSize(*li);
-	for(int k = 0; k < i; k++) {
-		if(big -> data < next -> data) {
-			big = next;
-			next = next -> next;
+void invert(line *li) {
+	char *aux;
+	aux = malloc(sizeof(char) * 256);
+	node *p1, *p2, *p3;
+	p1 = li -> beggin;
+	p2 = li -> end;
+	do {
+		p3 = p2;
+		aux = p1 -> data;
+		p1 -> data = p2 -> data;
+		p2 -> data = aux;
+		p1 = p1 -> next;
+		p2 = p1;
+		while(p2 -> next != p3 && p2 -> next != NULL) p2 = p2 -> next;
+		if(p1 -> next == p2) {
+			aux = p1 -> data;
+			p1 -> data = p2 -> data;
+			p2 -> data = aux;
+			break;
 		}
+	} while(p1 != p2);
+}
+
+void unInter(line l1, line l2, line *uni, line *inter) {
+	node *p1 = l1.beggin, *p2 = l2.beggin;
+	while(p1) {
+		putIn(p1 -> key, p1 -> data, uni);
+		p1 = p1 -> next;
+	} p1 = l2.beggin;
+	while(p1) {
+		putIn(p1 -> key, p1 -> data, uni);
+		p1 = p1 -> next;
+	} p1 = l1.beggin;
+	while(p2) {
+		while(p1) {
+			if(p1 -> data == p2 -> data) putIn(p1 -> key, p1 -> data, inter);
+			p1 = p1 -> next;
+		}
+		p1 = l1.beggin;
+		p2 = p2 -> next;
 	}
-	while(big -> data > li -> beggin -> data) {
-		putIn(li -> beggin -> key, li -> beggin -> data, li);
-		putOut(li);
-	}
-	putOut(li);
 }
 
 int main() {
+	line one, two, uni, inter;
 	banco agencia;
 	initiateBank(&agencia);
-	pessoa p1, p2, p3;
+	pessoa p1, p2, p3, p4, p5, p6;
 	p1.nome = "Carlos";
-	p1.idade = 40;
+	p1.idade = 70;
 	p2.nome = "Maria";
 	p2.idade = 30;
 	p3.nome = "Joao";
 	p3.idade = 25;
+	p4.nome = "Clarisse";
+	p4.idade = 40;
+	p5.nome = "Clara";
+	p5.idade = 90;
+	p6.nome = "Teresa";
+	p6.idade = 80;
+	initiate(&one);
+	initiate(&two);
+	initiate(&uni);
+	initiate(&inter);
+	putIn(0, "1", &one);
+	putIn(0, "2", &one);
+	putIn(0, "3", &one);
+	putIn(0, "4", &one);
+	putIn(0, "5", &one);
+	putIn(0, "6", &two);
+	putIn(0, "7", &two);
+	putIn(0, "8", &two);
+	putIn(0, "9", &two);
+	putIn(0, "10", &two);
+	showLine(one);
+	showLine(two);
+	unInter(one, two, &uni, &inter);
+	showLine(uni);
+	showLine(inter);
 	entrarNaFila(p1, &agencia);
 	entrarNaFila(p2, &agencia);
 	entrarNaFila(p3, &agencia);
+	entrarNaFila(p4, &agencia);
+	entrarNaFila(p5, &agencia);
+	entrarNaFila(p6, &agencia);
+	atenderProximo(&agencia);
+	atenderProximo(&agencia);
+	atenderProximo(&agencia);
+	atenderProximo(&agencia);
+	atenderProximo(&agencia);
+	atenderProximo(&agencia);
 	system("pause");
 	return 0;
 }
