@@ -213,8 +213,6 @@ int checar_fim_de_jogo(int cm_a, int cm_l, campo cm[cm_a][cm_l]){
 	return marcados == quant_bombas || todos_revelados == TRUE ? TRUE : FALSE;
 }
 
-char commands[2][5] = {"walk", "flag"};
-
 int valid_command(char cmd[5]){
 	return strcmp(cmd, "walk") == 0 || strcmp(cmd, "flag") == 0 ? TRUE : FALSE;
 }
@@ -225,7 +223,7 @@ int main(){
 	clear();
 	int jogando = TRUE, opcao = -1;
 	while (jogando == TRUE) {
-		wprintf(L"Opções:\n");
+		wprintf(L"Opcoes:\n");
 		wprintf(L"1.Iniciar Novo Jogo\n");
 		wprintf(L"2.Como Jogar\n");
 		wprintf(L"3.Sair\n");
@@ -258,17 +256,17 @@ int main(){
 					x--; y--;
 					if (strcmp(command, "walk") == 0) {
 						if (campo_minado[x][y].revelado == FLAG) {
-							wprintf(L"O campo selecionado está marcado, desmarque-o antes de revelar.\n");
+							wprintf(L"O campo selecionado esta marcado, desmarque-o antes de revelar.\n");
 							continue;
 						} else if (campo_minado[x][y].revelado == TRUE) {
-							wprintf(L"O campo selecionado já foi revelado.");
+							wprintf(L"O campo selecionado ja foi revelado.");
 							continue;
 						} else {
 							if (campo_minado[x][y].tipo == BOMBA) {
 								clear();
 								revelar = TRUE;
 								print_campo(altura, largura, campo_minado, L":(");
-								wprintf(L"Você perdeu! :(\nBoa sorte na próxima vez.\n\n");
+								wprintf(L"Voce perdeu! :(\nBoa sorte na proxima vez.\n\n");
 								break;
 							} else {
 								coord_queue cq;
@@ -290,7 +288,6 @@ int main(){
 								}
 							}
 						}
-						printf("Command: %s ; %d ; %d ; l:%d ; %d\n", command, strcmp(command, "walk"), strcmp(command, "flag"), (int) strlen(command), valid_command(command));
 					} else if (strcmp(command, "flag") == 0) {
 						if (campo_minado[x][y].revelado == FALSE){
 							campo_minado[x][y].revelado = FLAG;
@@ -318,11 +315,11 @@ int main(){
 				clear();
 				wprintf(L"Como jogar:\n");
 				wprintf(L"Escolha o tamanho do campo minado.\n");
-				wprintf(L"Escolha o número de bombas que serão aleatóriamente distribuídas no campo.\n");
-				wprintf(L"Digite a coordenada de um campo que você acha que não tem bomba.\n");
-				wprintf(L"O formato para a coordenada é o seguinte: \"x y\".\n");
-				wprintf(L"Quando você selecionar um campo com bomba você perde.\n");
-				wprintf(L"Você ganha se conseguir abrir todos os campos que não possuem bombas.\n");
+				wprintf(L"Escolha o numero de bombas que serao aleatoriamente distribuidas no campo.\n");
+				wprintf(L"Digite 'walk x y' para revelar a coordenada (x,y) no campo ou 'flag x y' para marcar a coordenada (x,y) como uma bomba.\n");
+				wprintf(L"Se voce pisar (comando 'walk') num campo com bomba voce perde.\n");
+				wprintf(L"Voce ganha se conseguir marcar (comando: 'mark') todos os campos que possuem bombas.\n");
+				wprintf(L"Ou se conseguir pisar (comando: 'walk') em todos os campos que nao possuem bombas.\n");
 				wprintf(L"Para jogar selecione a opção 1 no menu principal.\n");
 				wprintf(L"Boa sorte!\n\n");
 				break;
@@ -330,10 +327,10 @@ int main(){
 			case 3: jogando = FALSE; break;
 			default:
 			clear();
-			wprintf(L"Opção inválida. Por favor tente novamente.\n");
+			wprintf(L"Opção invalida. Por favor tente novamente.\n");
 			break;
 		}
 	}
-	wprintf(L"Até a próxima!\n");
+	wprintf(L"Ate a proxima!\n");
 	return 0;
 }
