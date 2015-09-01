@@ -37,7 +37,7 @@ bool heap_is_empty(trigo *t){
 }
 
 bool heap_is_full(trigo *t){
-    return t != 0 && t->length + 1 == t->capacity;
+    return t != 0 && t->length == t->capacity;
 }
 
 void heap_resize(trigo *t){
@@ -76,13 +76,13 @@ void heap_descend(trigo *t, int index){
 }
 
 void heap_push(trigo *t, int elem){
-    printf("Pushing %d to Heap...\n", elem);
     if (heap_is_full(t)){
         heap_resize(t);
     }
     t->data[t->length] = elem;
     heap_ascend(t, t->length);
     t->length++;
+    printf("Pushing %d to Heap...\n", elem);
 }
 
 void heap_pop(trigo *t, int *elem){
